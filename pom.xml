@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.myOwnPath</groupId>
+    <artifactId>hbase-test</artifactId>
+    <version>1.0</version>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spark.version>2.4.0</spark.version>
+        <scala.version>2.11.7</scala.version>
+        <hadoop.version>2.7.3</hadoop.version>
+        <hbase.version>1.4.8</hbase.version>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>product</id>
+            <properties>
+                <base.group.id></base.group.id>
+                <redis.host>....</redis.host>
+                <redis.port>6379</redis.port>
+                <redis.batch.number>5000</redis.batch.number>
+                <snapped.driver.ping.brokers>...</snapped.driver.ping.brokers>
+                <snapped.driver.ping.topic>...</snapped.driver.ping.topic>
+                <snapped.driver.ping.checkpoint.mark1.path>/tmp/streaming-prd/snapped/mark1</snapped.driver.ping.checkpoint.mark1.path>
+                <snapped.driver.ping.checkpoint.mark2.path>/tmp/streaming-prd/snapped/mark2</snapped.driver.ping.checkpoint.mark2.path>
+                <snapped.driver.ping.checkpoint.mark3.path>/tmp/streaming-prd/snapped/mark3</snapped.driver.ping.checkpoint.mark3.path>
+                <snapped.driver.ping.dynamodb.batch.number>25</snapped.driver.ping.dynamodb.batch.number>
+                <snapped.driver.ping.s3.output>...</snapped.driver.ping.s3.output>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/product</directory>
+                    </resource>
+                </resources>
+            </build>
+
+        </profile>
+
+        <profile>
+            <id>grey</id>
+            <properties>
+                <base.group.id></base.group.id>
+                <!--<redis.host>stg-gps-quality.pcxebj.clustercfg.apse1.cache.amazonaws.com</redis.host>-->
+                <redis.host>...</redis.host>
+                <redis.port>6379</redis.port>
+                <redis.batch.number>5</redis.batch.number>
+                <snapped.driver.ping.brokers>...</snapped.driver.ping.brokers>
+                <snapped.driver.ping.topic>...</snapped.driver.ping.topic>
+                <snapped.driver.ping.checkpoint.mark1.path>/tmp/streaming/snapped/mark1</snapped.driver.ping.checkpoint.mark1.path>
+                <snapped.driver.ping.checkpoint.mark2.path>/tmp/streaming/snapped/mark2</snapped.driver.ping.checkpoint.mark2.path>
+                <snapped.driver.ping.checkpoint.mark3.path>/tmp/streaming/snapped/mark3</snapped.driver.ping.checkpoint.mark3.path>
+                <snapped.driver.ping.dynamodb.batch.number>1</snapped.driver.ping.dynamodb.batch.number>
+                <snapped.driver.ping.s3.output>...</snapped.driver.ping.s3.output>
+            </properties>
+
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/test</directory>
+                    </resource>
+                </resources>
+            </build>
+
+        </profile>
+
+        <profile>
+            <id>test</id>
+            <properties>
+
+            </properties>
+
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources/test</directory>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+    </profiles>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_2.11</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.1.36</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_2.11</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming_2.11</artifactId>
+            <version>${spark.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>scala-library</artifactId>
+                    <groupId>org.scala-lang</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.1.36</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>3.7.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/net.sf.json-lib/json-lib -->
+        <dependency>
+            <groupId>net.sf.json-lib</groupId>
+            <artifactId>json-lib</artifactId>
+            <version>2.4</version>
+            <classifier>jdk15</classifier>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.hbase/hbase-client -->
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-client</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.hbase/hbase-common -->
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-common</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.hbase/hbase-server -->
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-server</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <!--&lt;!&ndash; maven官方 http://repo1.maven.org/maven2/  或 http://repo2.maven.org/maven2/ （延迟低一些） &ndash;&gt;-->
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <layout>default</layout>
+            <url>http://repo2.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+
+        <repository>
+            <id>spark</id>
+            <url>https://mvnrepository.com/artifact/org.apache.spark/spark-streaming</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>3.2.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <args>
+                                <!--<arg>-make:transitive</arg>-->
+                                <arg>-dependencyfile</arg>
+                                <arg>${project.build.directory}/.scala_dependencies</arg>
+                            </args>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.google.protobuf</pattern>
+                                    <shadedPattern>shaded.com.google.protobuf</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
